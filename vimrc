@@ -207,7 +207,15 @@ if ! has('nvim')
                 for win_id in win_findbuf(term)
                     let win_nr = win_id2win(win_id)
                     if win_nr > 0
-                        execute win_nr 'close'
+                        if winnr('$') == 1
+                            if len(filter(range(1, bufnr('$')), 'buflisted(v:val)')) == 1
+                                enew
+                            else
+                                bnext
+                            endif
+                        else
+                            execute win_nr 'close'
+                        endif
                     endif
                 endfor
             endif
