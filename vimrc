@@ -198,18 +198,13 @@ if ! has('nvim')
     function ToggleTerminal() abort
         const terms = term_list()
         if empty(terms)
-            botright terminal
+            term ++curwin
         else
             const term = terms[0]
             if bufwinnr(term) < 0
-                execute 'botright sbuffer' term
+                execute term . 'b'
             else
-                for win_id in win_findbuf(term)
-                    let win_nr = win_id2win(win_id)
-                    if win_nr > 0
-                        execute win_nr 'close'
-                    endif
-                endfor
+                bprev
             endif
         endif
     endfunction
