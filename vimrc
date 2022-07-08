@@ -172,11 +172,11 @@ endfunction
 augroup AutoFold
     autocmd!
     autocmd FileType c,cpp,h,hpp,sh {
-        nunmap <buffer> <Space>
+        silent! nunmap <buffer> <Space>
         nnoremap <silent><buffer> <Space> :call FoldOnBraces()<CR>
         }
     autocmd FileType markdown {
-        nunmap <buffer> <Space>
+        silent! nunmap <buffer> <Space>
         nnoremap <silent><buffer> <Space> :call FoldForMarkdown()<CR>
         }
 augroup END
