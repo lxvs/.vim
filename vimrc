@@ -240,18 +240,20 @@ if ! has('nvim')
     inoremap <silent> <C-`> <Esc>:call ToggleTerminal()<CR>
     nnoremap <silent> <C-`> :call ToggleTerminal()<CR>
 
-    function RotateTerm() abort
+    function RotateTerm(reverse = 0) abort
         const terms = term_list()
         let len = len(terms)
         if len < 2
             return
         endif
-        exec 'buffer' terms[(index(terms, bufnr('%')) - 1) % len]
+        let idx = a:reverse ? (index(terms, bufnr('%')) +  1) % len : (index(terms, bufnr('%')) -  1) % len
+        exec 'buffer' terms[idx]
     endfunction
 
     set termwinkey=<C-l>
     exec 'tnoremap <silent> <C-`>' &termwinkey . ':call ToggleTerminal()<CR>'
     exec 'tnoremap <silent> <C-Tab>' &termwinkey . ':call RotateTerm()<CR>'
+    exec 'tnoremap <silent> <C-S-Tab>' &termwinkey . ':call RotateTerm(1)<CR>'
     exec 'tnoremap <silent> <C-n>' &termwinkey . 'N<CR>'
     exec 'tnoremap <silent> <S-Insert>' &termwinkey . '"*'
     exec 'tnoremap <silent> <C-q>' &termwinkey . ':NERDTreeToggle<CR>'
