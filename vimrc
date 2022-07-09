@@ -206,19 +206,16 @@ autocmd BufNewFile *.{h,hpp} call <SID>insert_gates()
 if ! has('nvim')
     function ToggleTerminal() abort
         const terms = term_list()
-        const cmd = 'botright terminal ++close ' .. &shell .. ' --login -i'
+        const newterm = 'botright terminal ++close ' .. &shell .. ' --login -i'
         const otherbuf = len(filter(range(1, bufnr('$')), 'buflisted(v:val) && getbufvar(v:val, "&buftype") !=# "terminal"'))
+        const onlywin = otherbuf ? 'bprev' : 'enew'
         if empty(terms)
-            exec cmd
+            exec newterm
             return
         endif
         if &buftype ==# 'terminal'
             if winnr('$') == 1
-                if otherbuf
-                    bprev
-                else
-                    enew
-                endif
+                exec onlywin
             else
                 close
             endif
@@ -229,20 +226,16 @@ if ! has('nvim')
             execute 'botright sbuffer' term
             return
         endif
-        for win_id in win_findbuf(term)
-            let win_nr = win_id2win(win_id)
-            if win_nr > 0
-                if winnr('$') == 1
-                    if otherbuf
-                        bprev
-                    else
-                        enew
-                    endif
-                else
+        if winnr('$') == 1
+            exec onlywin
+        else
+            for win_id in win_findbuf(term)
+                let win_nr = win_id2win(win_id)
+                if win_nr > 0
                     execute win_nr 'close'
                 endif
-            endif
-        endfor
+            endfor
+        endif
     endfunction
     inoremap <silent> <C-`> <Esc>:call ToggleTerminal()<CR>
     nnoremap <silent> <C-`> :call ToggleTerminal()<CR>
