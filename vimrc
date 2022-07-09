@@ -4,14 +4,6 @@ if (has('termguicolors'))
     set termguicolors
 endif
 
-try
-    colorscheme nord
-catch
-    try
-        colorscheme desert
-    endtry
-endtry
-
 if has('gui_running')
     set guioptions-=m
     set guioptions-=T
@@ -62,6 +54,17 @@ set belloff=all
 set listchars=tab:»\ ,trail:·
 set list
 set foldmethod=manual
+set background=dark
+set laststatus=2
+set noshowmode
+let g:lightline = {'colorscheme': 'nord'}
+try
+    colorscheme nord
+catch
+    try
+        colorscheme desert
+    endtry
+endtry
 
 set nrformats-=octal
 map Q gq
