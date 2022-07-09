@@ -208,7 +208,7 @@ if ! has('nvim')
         const terms = term_list()
         const newterm = 'botright terminal ++close ' .. &shell .. ' --login -i'
         const otherbuf = len(filter(range(1, bufnr('$')), 'buflisted(v:val) && getbufvar(v:val, "&buftype") !=# "terminal"'))
-        const onlywin = otherbuf ? 'bprev' : 'enew'
+        const onlywin = otherbuf ? 'call BnextSkipTerm(1)' : 'enew'
         if empty(terms)
             exec newterm
             return
