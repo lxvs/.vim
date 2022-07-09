@@ -204,11 +204,12 @@ endfunction
 autocmd BufNewFile *.{h,hpp} call <SID>insert_gates()
 
 if ! has('nvim')
-    function ToggleTerminal() abort
+    function ToggleTerminal(new = 0) abort
         const terms = term_list()
         const newterm = 'botright terminal ++close ' .. &shell .. ' --login -i'
+        const newterm_curwin = 'botright terminal ++curwin ++close ' .. &shell .. ' --login -i'
         const otherbuf = len(filter(range(1, bufnr('$')), 'buflisted(v:val) && getbufvar(v:val, "&buftype") !=# "terminal"'))
-        const onlywin = otherbuf ? 'call BnextSkipTerm(1)' : 'enew'
+        const onlywin = a:new ? newterm_curwin : (otherbuf ? 'call BnextSkipTerm(1)' : 'enew')
         if empty(terms)
             exec newterm
             return
@@ -218,7 +219,14 @@ if ! has('nvim')
                 exec onlywin
             else
                 close
+                if a:new
+                    exec newterm
+                endif
             endif
+            return
+        endif
+        if a:new
+            exec newterm
             return
         endif
         const term = terms[-1]
@@ -235,10 +243,15 @@ if ! has('nvim')
                     execute win_nr 'close'
                 endif
             endfor
+            if a:new
+                exec newterm
+            endif
         endif
     endfunction
     inoremap <silent> <C-`> <Esc>:call ToggleTerminal()<CR>
     nnoremap <silent> <C-`> :call ToggleTerminal()<CR>
+    inoremap <silent> <C-1> <Esc>:call ToggleTerminal(1)<CR>
+    nnoremap <silent> <C-1> :call ToggleTerminal(1)<CR>
 
     function RotateTerm(reverse = 0) abort
         const terms = term_list()
@@ -252,6 +265,7 @@ if ! has('nvim')
 
     set termwinkey=<C-l>
     exec 'tnoremap <silent> <C-`> ' .. &termwinkey .. ':call ToggleTerminal()<CR>'
+    exec 'tnoremap <silent> <C-1> ' .. &termwinkey .. ':call ToggleTerminal(1)<CR>'
     exec 'tnoremap <silent> <C-Tab> ' .. &termwinkey .. ':call RotateTerm()<CR>'
     exec 'tnoremap <silent> <C-S-Tab> ' .. &termwinkey .. ':call RotateTerm(1)<CR>'
     exec 'tnoremap <silent> <C-n> ' .. &termwinkey .. 'N<CR>'
