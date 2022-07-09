@@ -27,9 +27,9 @@ if has("win32")
     set shellcmdflag=--login\ -c
     set shellpipe=2>&1\ \|\ tee
     set shellredir=>%s\ 2>&1
-    let s:vimdir = $HOME . "/vimfiles"
+    let s:vimdir = $HOME .. "/vimfiles"
 else
-    let s:vimdir = $HOME . "/.vim"
+    let s:vimdir = $HOME .. "/.vim"
 endif
 
 set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
@@ -90,24 +90,24 @@ if has('langmap') && exists('+langremap')
     set nolangremap
 endif
 
-if ! isdirectory(s:vimdir . "/temp")
-    call mkdir(s:vimdir . "/temp", "", 0700)
+if ! isdirectory(s:vimdir .. "/temp")
+    call mkdir(s:vimdir .. "/temp", "", 0700)
 endif
-let &directory = s:vimdir . "/temp/"
+let &directory = s:vimdir .. "/temp/"
 if has("vms")
     set nobackup
 else
-    if ! isdirectory(s:vimdir . "/bak")
-        call mkdir(s:vimdir . "/bak", "", 0700)
+    if ! isdirectory(s:vimdir .. "/bak")
+        call mkdir(s:vimdir .. "/bak", "", 0700)
     endif
     set backup
-    let &backupdir = s:vimdir . "/bak"
+    let &backupdir = s:vimdir .. "/bak"
     if has('persistent_undo')
-        if ! isdirectory(s:vimdir . "/undo")
-            call mkdir(s:vimdir . "/undo", "", 0700)
+        if ! isdirectory(s:vimdir .. "/undo")
+            call mkdir(s:vimdir .. "/undo", "", 0700)
         endif
         set undofile
-        let &undodir = s:vimdir . "/undo/"
+        let &undodir = s:vimdir .. "/undo/"
     endif
 endif
 
@@ -175,7 +175,7 @@ function! FoldForMarkdown()
                 let lstart = search('^#\{1,\} [^ \t]', "bcnW")
                 let lend = search('^#\{1,\} [^ \t]', "nW") - 2
                 if lcur <= lend && lstart < lend
-                    exec lstart . "," . lend . "fold"
+                    exec lstart .. "," .. lend .. "fold"
                 endif
             else
                 exec '?^#\{1,\} \w?,$ fold'
@@ -202,9 +202,9 @@ autocmd BufRead,BufWrite * if ! &bin | silent! %s/\s\+$//ge | endif
 
 function! s:insert_gates()
     let gatename = substitute(toupper(expand("%:t")), "[\.\-]", "_", "g")
-    execute "normal! ggO#ifndef __" . gatename . "__"
-    execute "normal! o#define __" . gatename . "__"
-    execute "normal! Go#endif /* __" . gatename . "__ */"
+    execute "normal! ggO#ifndef __" .. gatename .. "__"
+    execute "normal! o#define __" .. gatename .. "__"
+    execute "normal! Go#endif /* __" .. gatename .. "__ */"
     normal! 2O
     normal! k
 endfunction
@@ -213,7 +213,7 @@ autocmd BufNewFile *.{h,hpp} call <SID>insert_gates()
 if ! has('nvim')
     function ToggleTerminal() abort
         const terms = term_list()
-        let cmd = 'botright terminal ++close ' . &shell . ' --login -i'
+        const cmd = 'botright terminal ++close ' .. &shell .. ' --login -i'
         const otherbuf = len(filter(range(1, bufnr('$')), 'buflisted(v:val) && getbufvar(v:val, "&buftype") !=# "terminal"'))
         if empty(terms)
             exec cmd
@@ -265,10 +265,10 @@ if ! has('nvim')
     endfunction
 
     set termwinkey=<C-l>
-    exec 'tnoremap <silent> <C-`>' &termwinkey . ':call ToggleTerminal()<CR>'
-    exec 'tnoremap <silent> <C-Tab>' &termwinkey . ':call RotateTerm()<CR>'
-    exec 'tnoremap <silent> <C-S-Tab>' &termwinkey . ':call RotateTerm(1)<CR>'
-    exec 'tnoremap <silent> <C-n>' &termwinkey . 'N<CR>'
-    exec 'tnoremap <silent> <S-Insert>' &termwinkey . '"*'
-    exec 'tnoremap <silent> <C-q>' &termwinkey . ':NERDTreeToggle<CR>'
+    exec 'tnoremap <silent> <C-`> ' .. &termwinkey .. ':call ToggleTerminal()<CR>'
+    exec 'tnoremap <silent> <C-Tab> ' .. &termwinkey .. ':call RotateTerm()<CR>'
+    exec 'tnoremap <silent> <C-S-Tab> ' .. &termwinkey .. ':call RotateTerm(1)<CR>'
+    exec 'tnoremap <silent> <C-n> ' .. &termwinkey .. 'N<CR>'
+    exec 'tnoremap <silent> <S-Insert> ' .. &termwinkey .. '"*'
+    exec 'tnoremap <silent> <C-q> ' .. &termwinkey .. ':NERDTreeToggle<CR>'
 endif
