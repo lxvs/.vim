@@ -137,7 +137,7 @@ cnoremap <C-a> <Home>
 nnoremap <Space> za
 nnoremap <C-Space> zA
 
-function! BnextSkipTerm(reverse = 0)
+function s:BnextSkipTerm(reverse = 0)
     const start_buf = bufnr('%')
     const cmd = a:reverse ? 'bprev' : 'bnext'
     exec cmd
@@ -145,14 +145,14 @@ function! BnextSkipTerm(reverse = 0)
         exec cmd
     endwhile
 endfunction
-nnoremap <silent> <S-Tab> :call BnextSkipTerm(1)<CR>
-nnoremap <silent> <Tab> :call BnextSkipTerm()<CR>
-nnoremap <silent> <C-PageUp> :call BnextSkipTerm(1)<CR>
-nnoremap <silent> <C-PageDown> :call BnextSkipTerm()<CR>
-inoremap <silent> <C-PageUp> <Esc>:call BnextSkipTerm(1)<CR>
-inoremap <silent> <C-PageDown> <Esc>:call BnextSkipTerm()<CR>
+nnoremap <silent> <S-Tab> :call <SID>BnextSkipTerm(1)<CR>
+nnoremap <silent> <Tab> :call <SID>BnextSkipTerm()<CR>
+nnoremap <silent> <C-PageUp> :call <SID>BnextSkipTerm(1)<CR>
+nnoremap <silent> <C-PageDown> :call <SID>BnextSkipTerm()<CR>
+inoremap <silent> <C-PageUp> <Esc>:call <SID>BnextSkipTerm(1)<CR>
+inoremap <silent> <C-PageDown> <Esc>:call <SID>BnextSkipTerm()<CR>
 
-function! FoldOnBraces()
+function s:FoldOnBraces()
     if ! foldlevel(line('.'))
         exec 'normal! zfa{'
     else
@@ -161,7 +161,7 @@ function! FoldOnBraces()
     redraw
 endfunction
 
-function! FoldForMarkdown()
+function s:FoldForMarkdown()
     if foldlevel(line('.'))
         exec 'normal! za'
     else
@@ -183,34 +183,38 @@ endfunction
 
 augroup AutoFold
     autocmd!
+    autocmd FileType vim setlocal foldmethod=indent
     autocmd FileType c,cpp,h,hpp,sh,markdown
                 \ silent! nunmap <buffer> <Space>
     autocmd FileType c,cpp,h,hpp,sh
-                \ nnoremap <silent><buffer> <Space> :call FoldOnBraces()<CR>
+                \ nnoremap <silent><buffer> <Space> :call <SID>FoldOnBraces()<CR>
     autocmd FileType markdown
-                \ nnoremap <silent><buffer> <Space> :call FoldForMarkdown()<CR>
+                \ nnoremap <silent><buffer> <Space> :call <SID>FoldForMarkdown()<CR>
 augroup END
 
 " Remove any trailing whitespace that is in the file
 autocmd BufRead,BufWrite * if ! &bin | silent! %s/\s\+$//ge | endif
 
-function! s:insert_gates()
-    let gatename = substitute(toupper(expand('%:t')), '[\.\-]', '_', 'g')
+function s:InsertHeaderGates()
+    const gatename = substitute(toupper(expand('%:t')), '[\.\-]', '_', 'g')
     execute 'normal! ggO#ifndef __' .. gatename .. '__'
     execute 'normal! o#define __' .. gatename .. '__'
     execute 'normal! Go#endif /* __' .. gatename .. '__ */'
     normal! 2O
     normal! k
 endfunction
-autocmd BufNewFile *.{h,hpp} call <SID>insert_gates()
+augroup HeaderGates
+    autocmd!
+    autocmd BufNewFile *.{h,hpp} call <SID>InsertHeaderGates()
+augroup END
 
 if ! has('nvim')
-    function ToggleTerminal(new = 0) abort
+    function s:ToggleTerminal(new = 0) abort
         const terms = term_list()
         const newterm = 'botright terminal ++close ' .. &shell .. ' --login -i'
         const newterm_curwin = 'botright terminal ++curwin ++close ' .. &shell .. ' --login -i'
         const otherbuf = len(filter(range(1, bufnr('$')), 'buflisted(v:val) && getbufvar(v:val, "&buftype") !=# "terminal"'))
-        const onlywin = a:new ? newterm_curwin : (otherbuf ? 'call BnextSkipTerm(1)' : 'enew')
+        const onlywin = a:new ? newterm_curwin : (otherbuf ? 'call <SID>BnextSkipTerm(1)' : 'enew')
         if empty(terms)
             exec newterm
             return
@@ -249,12 +253,12 @@ if ! has('nvim')
             endif
         endif
     endfunction
-    inoremap <silent> <C-`> <Esc>:call ToggleTerminal()<CR>
-    nnoremap <silent> <C-`> :call ToggleTerminal()<CR>
-    inoremap <silent> <C-1> <Esc>:call ToggleTerminal(1)<CR>
-    nnoremap <silent> <C-1> :call ToggleTerminal(1)<CR>
+    inoremap <silent> <C-`> <Esc>:call <SID>ToggleTerminal()<CR>
+    nnoremap <silent> <C-`> :call <SID>ToggleTerminal()<CR>
+    inoremap <silent> <C-1> <Esc>:call <SID>ToggleTerminal(1)<CR>
+    nnoremap <silent> <C-1> :call <SID>ToggleTerminal(1)<CR>
 
-    function RotateTerm(reverse = 0) abort
+    function s:RotateTerm(reverse = 0) abort
         const terms = term_list()
         let len = len(terms)
         if len < 2
@@ -265,10 +269,10 @@ if ! has('nvim')
     endfunction
 
     set termwinkey=<C-l>
-    exec 'tnoremap <silent> <C-`> ' .. &termwinkey .. ':call ToggleTerminal()<CR>'
-    exec 'tnoremap <silent> <C-1> ' .. &termwinkey .. ':call ToggleTerminal(1)<CR>'
-    exec 'tnoremap <silent> <C-Tab> ' .. &termwinkey .. ':call RotateTerm()<CR>'
-    exec 'tnoremap <silent> <C-S-Tab> ' .. &termwinkey .. ':call RotateTerm(1)<CR>'
+    exec 'tnoremap <silent> <C-`> ' .. &termwinkey .. ':call <SID>ToggleTerminal()<CR>'
+    exec 'tnoremap <silent> <C-1> ' .. &termwinkey .. ':call <SID>ToggleTerminal(1)<CR>'
+    exec 'tnoremap <silent> <C-Tab> ' .. &termwinkey .. ':call <SID>RotateTerm()<CR>'
+    exec 'tnoremap <silent> <C-S-Tab> ' .. &termwinkey .. ':call <SID>RotateTerm(1)<CR>'
     exec 'tnoremap <silent> <C-n> ' .. &termwinkey .. 'N<CR>'
     exec 'tnoremap <silent> <S-Insert> ' .. &termwinkey .. '"*'
     exec 'tnoremap <silent> <C-q> ' .. &termwinkey .. ':NERDTreeToggle<CR>'
