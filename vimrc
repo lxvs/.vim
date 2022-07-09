@@ -183,14 +183,12 @@ endfunction
 
 augroup AutoFold
     autocmd!
-    autocmd FileType c,cpp,h,hpp,sh {
-        silent! nunmap <buffer> <Space>
-        nnoremap <silent><buffer> <Space> :call FoldOnBraces()<CR>
-        }
-    autocmd FileType markdown {
-        silent! nunmap <buffer> <Space>
-        nnoremap <silent><buffer> <Space> :call FoldForMarkdown()<CR>
-        }
+    autocmd FileType c,cpp,h,hpp,sh,markdown
+                \ silent! nunmap <buffer> <Space>
+    autocmd FileType c,cpp,h,hpp,sh
+                \ nnoremap <silent><buffer> <Space> :call FoldOnBraces()<CR>
+    autocmd FileType markdown
+                \ nnoremap <silent><buffer> <Space> :call FoldForMarkdown()<CR>
 augroup END
 
 " Remove any trailing whitespace that is in the file
