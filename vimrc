@@ -126,12 +126,6 @@ inoremap <silent> <Up> <Esc>gka
 inoremap <silent> <Down> <Esc>gja
 nnoremap <silent> <C-q> :NERDTreeToggle<CR>
 inoremap <silent> <C-q> <Esc>:NERDTreeToggle<CR>
-nnoremap <silent> <S-Tab> :call BprevSkipTerm()<CR>
-nnoremap <silent> <Tab> :call BnextSkipTerm()<CR>
-nnoremap <silent> <C-PageUp> :call BprevSkipTerm()<CR>
-nnoremap <silent> <C-PageDown> :call BnextSkipTerm()<CR>
-inoremap <silent> <C-PageUp> <Esc>:call BprevSkipTerm()<CR>
-inoremap <silent> <C-PageDown> <Esc>:call BnextSkipTerm()<CR>
 nnoremap <silent> <Home> i <Esc>r
 nnoremap <silent> <End> a <Esc>r
 nnoremap <silent> zj o<Esc>
@@ -140,21 +134,20 @@ cnoremap <C-a> <Home>
 nnoremap <Space> za
 nnoremap <C-Space> zA
 
-function! BprevSkipTerm()
-    let start_buf = bufnr('%')
-    bprev
+function! BnextSkipTerm(reverse = 0)
+    const start_buf = bufnr('%')
+    const cmd = a:reverse ? 'bprev' : 'bnext'
+    exec cmd
     while &buftype ==# "terminal" && bufnr('%') != start_buf
-        bprev
+        exec cmd
     endwhile
 endfunction
-
-function! BnextSkipTerm()
-    let start_buf = bufnr('%')
-    bnext
-    while &buftype ==# "terminal" && bufnr('%') != start_buf
-        bnext
-    endwhile
-endfunction
+nnoremap <silent> <S-Tab> :call BnextSkipTerm(1)<CR>
+nnoremap <silent> <Tab> :call BnextSkipTerm()<CR>
+nnoremap <silent> <C-PageUp> :call BnextSkipTerm(1)<CR>
+nnoremap <silent> <C-PageDown> :call BnextSkipTerm()<CR>
+inoremap <silent> <C-PageUp> <Esc>:call BnextSkipTerm(1)<CR>
+inoremap <silent> <C-PageDown> <Esc>:call BnextSkipTerm()<CR>
 
 function! FoldOnBraces()
     if ! foldlevel(line('.'))
