@@ -213,29 +213,43 @@ autocmd BufNewFile *.{h,hpp} call <SID>insert_gates()
 if ! has('nvim')
     function ToggleTerminal() abort
         const terms = term_list()
+        let cmd = 'botright terminal ++close ' . &shell . ' --login -i'
+        const otherbuf = len(filter(range(1, bufnr('$')), 'buflisted(v:val) && getbufvar(v:val, "&buftype") !=# "terminal"'))
         if empty(terms)
-            exec "botright terminal ++close" &shell "--login -i"
-        else
-            const term = terms[0]
-            if bufwinnr(term) < 0
-                execute 'botright sbuffer' term
-            else
-                for win_id in win_findbuf(term)
-                    let win_nr = win_id2win(win_id)
-                    if win_nr > 0
-                        if winnr('$') == 1
-                            if len(filter(range(1, bufnr('$')), 'buflisted(v:val)')) == 1
-                                enew
-                            else
-                                bnext
-                            endif
-                        else
-                            execute win_nr 'close'
-                        endif
-                    endif
-                endfor
-            endif
+            exec cmd
+            return
         endif
+        if &buftype ==# 'terminal'
+            if winnr('$') == 1
+                if otherbuf
+                    bprev
+                else
+                    enew
+                endif
+            else
+                close
+            endif
+            return
+        endif
+        const term = terms[-1]
+        if bufwinnr(term) < 0
+            execute 'botright sbuffer' term
+            return
+        endif
+        for win_id in win_findbuf(term)
+            let win_nr = win_id2win(win_id)
+            if win_nr > 0
+                if winnr('$') == 1
+                    if otherbuf
+                        bprev
+                    else
+                        enew
+                    endif
+                else
+                    execute win_nr 'close'
+                endif
+            endif
+        endfor
     endfunction
     inoremap <silent> <C-`> <Esc>:call ToggleTerminal()<CR>
     nnoremap <silent> <C-`> :call ToggleTerminal()<CR>
