@@ -90,6 +90,9 @@ if has('langmap') && exists('+langremap')
     set nolangremap
 endif
 
+if ! isdirectory(s:vimdir)
+    call mkdir(s:vimdir, "", 0700)
+endif
 if ! isdirectory(s:vimdir .. "/temp")
     call mkdir(s:vimdir .. "/temp", "", 0700)
 endif
