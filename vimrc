@@ -1,6 +1,6 @@
 set nocompatible
 
-if (has("termguicolors"))
+if (has('termguicolors'))
     set termguicolors
 endif
 
@@ -22,14 +22,14 @@ endif
 
 set shellslash
 set grepprg=grep\ -nH\ $*
-if has("win32")
+if has('win32')
     set shell=C:/PROGRA~1/Git/usr/bin/bash.exe
     set shellcmdflag=--login\ -c
     set shellpipe=2>&1\ \|\ tee
     set shellredir=>%s\ 2>&1
-    let s:vimdir = $HOME .. "/vimfiles"
+    let s:vimdir = $HOME .. '/vimfiles'
 else
-    let s:vimdir = $HOME .. "/.vim"
+    let s:vimdir = $HOME .. '/.vim'
 endif
 
 set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
@@ -71,17 +71,17 @@ inoremap <C-U> <C-G>u<C-U>
 if 1
     filetype plugin indent on
     autocmd BufReadPost *
-                \ if line("'\"") >= 1 && line("'\"") <= line("$") && &ft !~# 'commit'
-                \ |   exe "normal! g`\""
+                \ if line("'\"") >= 1 && line("'\"") <= line('$') && &ft !~# 'commit'
+                \ |   exe 'normal! g`"'
                 \ | endif
 endif
 
-if &t_Co > 2 || has("gui_running")
+if &t_Co > 2 || has('gui_running')
     syntax on
     set hlsearch
 endif
 
-if !exists(":DiffOrig")
+if !exists(':DiffOrig')
   command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis
               \ | wincmd p | diffthis
 endif
@@ -91,26 +91,26 @@ if has('langmap') && exists('+langremap')
 endif
 
 if ! isdirectory(s:vimdir)
-    call mkdir(s:vimdir, "", 0700)
+    call mkdir(s:vimdir, '', 0700)
 endif
-if ! isdirectory(s:vimdir .. "/temp")
-    call mkdir(s:vimdir .. "/temp", "", 0700)
+if ! isdirectory(s:vimdir .. '/temp')
+    call mkdir(s:vimdir .. '/temp', '', 0700)
 endif
-let &directory = s:vimdir .. "/temp/"
-if has("vms")
+let &directory = s:vimdir .. '/temp/'
+if has('vms')
     set nobackup
 else
-    if ! isdirectory(s:vimdir .. "/bak")
-        call mkdir(s:vimdir .. "/bak", "", 0700)
+    if ! isdirectory(s:vimdir .. '/bak')
+        call mkdir(s:vimdir .. '/bak', '', 0700)
     endif
     set backup
-    let &backupdir = s:vimdir .. "/bak"
+    let &backupdir = s:vimdir .. '/bak'
     if has('persistent_undo')
-        if ! isdirectory(s:vimdir .. "/undo")
-            call mkdir(s:vimdir .. "/undo", "", 0700)
+        if ! isdirectory(s:vimdir .. '/undo')
+            call mkdir(s:vimdir .. '/undo', '', 0700)
         endif
         set undofile
-        let &undodir = s:vimdir .. "/undo/"
+        let &undodir = s:vimdir .. '/undo/'
     endif
 endif
 
@@ -141,7 +141,7 @@ function! BnextSkipTerm(reverse = 0)
     const start_buf = bufnr('%')
     const cmd = a:reverse ? 'bprev' : 'bnext'
     exec cmd
-    while &buftype ==# "terminal" && bufnr('%') != start_buf
+    while &buftype ==# 'terminal' && bufnr('%') != start_buf
         exec cmd
     endwhile
 endfunction
@@ -154,24 +154,24 @@ inoremap <silent> <C-PageDown> <Esc>:call BnextSkipTerm()<CR>
 
 function! FoldOnBraces()
     if ! foldlevel(line('.'))
-        exec "normal! zfa{"
+        exec 'normal! zfa{'
     else
-        exec "normal! za"
+        exec 'normal! za'
     endif
     redraw
 endfunction
 
 function! FoldForMarkdown()
     if foldlevel(line('.'))
-        exec "normal! za"
+        exec 'normal! za'
     else
         if search('^#\{1,\} \w', 'bcnW')
-            if search('^#\{1,\} \w', "nW")
+            if search('^#\{1,\} \w', 'nW')
                 let lcur = line('.')
-                let lstart = search('^#\{1,\} [^ \t]', "bcnW")
-                let lend = search('^#\{1,\} [^ \t]', "nW") - 2
+                let lstart = search('^#\{1,\} [^ \t]', 'bcnW')
+                let lend = search('^#\{1,\} [^ \t]', 'nW') - 2
                 if lcur <= lend && lstart < lend
-                    exec lstart .. "," .. lend .. "fold"
+                    exec lstart .. ',' .. lend .. 'fold'
                 endif
             else
                 exec '?^#\{1,\} \w?,$ fold'
@@ -195,10 +195,10 @@ augroup END
 autocmd BufRead,BufWrite * if ! &bin | silent! %s/\s\+$//ge | endif
 
 function! s:insert_gates()
-    let gatename = substitute(toupper(expand("%:t")), "[\.\-]", "_", "g")
-    execute "normal! ggO#ifndef __" .. gatename .. "__"
-    execute "normal! o#define __" .. gatename .. "__"
-    execute "normal! Go#endif /* __" .. gatename .. "__ */"
+    let gatename = substitute(toupper(expand('%:t')), '[\.\-]', '_', 'g')
+    execute 'normal! ggO#ifndef __' .. gatename .. '__'
+    execute 'normal! o#define __' .. gatename .. '__'
+    execute 'normal! Go#endif /* __' .. gatename .. '__ */'
     normal! 2O
     normal! k
 endfunction
