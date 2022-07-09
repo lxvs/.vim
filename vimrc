@@ -260,6 +260,7 @@ nnoremap <silent> <C-^> :call <SID>ToggleTerminal(1)<CR>
 inoremap <silent> <C-^> <Esc>:call <SID>ToggleTerminal(1)<CR>
 nnoremap <silent> <C-q> :call <SID>ToggleTerminal()<CR>
 inoremap <silent> <C-q> <Esc>:call <SID>ToggleTerminal()<CR>
+tnoremap <silent> <C-s> <Nop>
 
 function s:RotateTerm(reverse = 0) abort
     const terms = term_list()
