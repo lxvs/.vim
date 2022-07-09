@@ -127,8 +127,6 @@ nnoremap <silent> k gk
 nnoremap <silent> j gj
 inoremap <silent> <Up> <Esc>gka
 inoremap <silent> <Down> <Esc>gja
-nnoremap <silent> <C-q> :NERDTreeToggle<CR>
-inoremap <silent> <C-q> <Esc>:NERDTreeToggle<CR>
 nnoremap <silent> <Home> i <Esc>r
 nnoremap <silent> <End> a <Esc>r
 nnoremap <silent> zj o<Esc>
@@ -208,72 +206,72 @@ augroup HeaderGates
     autocmd BufNewFile *.{h,hpp} call <SID>InsertHeaderGates()
 augroup END
 
-if ! has('nvim')
-    function s:ToggleTerminal(new = 0) abort
-        const terms = term_list()
-        const newterm = 'botright terminal ++close ' .. &shell .. ' --login -i'
-        const newterm_curwin = 'botright terminal ++curwin ++close ' .. &shell .. ' --login -i'
-        const otherbuf = len(filter(range(1, bufnr('$')), 'buflisted(v:val) && getbufvar(v:val, "&buftype") !=# "terminal"'))
-        const onlywin = a:new ? newterm_curwin : (otherbuf ? 'call <SID>BnextSkipTerm(1)' : 'enew')
-        if empty(terms)
-            exec newterm
-            return
-        endif
-        if &buftype ==# 'terminal'
-            if winnr('$') == 1
-                exec onlywin
-            else
-                close
-                if a:new
-                    exec newterm
-                endif
-            endif
-            return
-        endif
-        if a:new
-            exec newterm
-            return
-        endif
-        const term = terms[-1]
-        if bufwinnr(term) < 0
-            execute 'botright sbuffer' term
-            return
-        endif
+function s:ToggleTerminal(new = 0) abort
+    const terms = term_list()
+    const newterm = 'botright terminal ++close ' .. &shell .. ' --login -i'
+    const newterm_curwin = 'botright terminal ++curwin ++close ' .. &shell .. ' --login -i'
+    const otherbuf = len(filter(range(1, bufnr('$')), 'buflisted(v:val) && getbufvar(v:val, "&buftype") !=# "terminal"'))
+    const onlywin = a:new ? newterm_curwin : (otherbuf ? 'call <SID>BnextSkipTerm(1)' : 'enew')
+    if empty(terms)
+        exec newterm
+        return
+    endif
+    if &buftype ==# 'terminal'
         if winnr('$') == 1
             exec onlywin
         else
-            for win_id in win_findbuf(term)
-                let win_nr = win_id2win(win_id)
-                if win_nr > 0
-                    execute win_nr 'close'
-                endif
-            endfor
+            close
             if a:new
                 exec newterm
             endif
         endif
-    endfunction
-    inoremap <silent> <C-`> <Esc>:call <SID>ToggleTerminal()<CR>
-    nnoremap <silent> <C-`> :call <SID>ToggleTerminal()<CR>
-    inoremap <silent> <C-1> <Esc>:call <SID>ToggleTerminal(1)<CR>
-    nnoremap <silent> <C-1> :call <SID>ToggleTerminal(1)<CR>
-
-    function s:RotateTerm(reverse = 0) abort
-        const terms = term_list()
-        let len = len(terms)
-        if len < 2
-            return
+        return
+    endif
+    if a:new
+        exec newterm
+        return
+    endif
+    const term = terms[-1]
+    if bufwinnr(term) < 0
+        execute 'botright sbuffer' term
+        return
+    endif
+    if winnr('$') == 1
+        exec onlywin
+    else
+        for win_id in win_findbuf(term)
+            let win_nr = win_id2win(win_id)
+            if win_nr > 0
+                execute win_nr 'close'
+            endif
+        endfor
+        if a:new
+            exec newterm
         endif
-        let idx = a:reverse ? (index(terms, bufnr('%')) +  1) % len : (index(terms, bufnr('%')) -  1) % len
-        exec 'buffer' terms[idx]
-    endfunction
+    endif
+endfunction
 
+nnoremap <silent> <C-q> :call <SID>ToggleTerminal()<CR>
+inoremap <silent> <C-q> <Esc>:call <SID>ToggleTerminal()<CR>
+nnoremap <silent> <C-S-q> :call <SID>ToggleTerminal(1)<CR>
+inoremap <silent> <C-S-q> <Esc>:call <SID>ToggleTerminal(1)<CR>
+
+function s:RotateTerm(reverse = 0) abort
+    const terms = term_list()
+    let len = len(terms)
+    if len < 2
+        return
+    endif
+    let idx = a:reverse ? (index(terms, bufnr('%')) +  1) % len : (index(terms, bufnr('%')) -  1) % len
+    exec 'buffer' terms[idx]
+endfunction
+
+if ! has('nvim')
     set termwinkey=<C-l>
-    exec 'tnoremap <silent> <C-`> ' .. &termwinkey .. ':call <SID>ToggleTerminal()<CR>'
-    exec 'tnoremap <silent> <C-1> ' .. &termwinkey .. ':call <SID>ToggleTerminal(1)<CR>'
+    exec 'tnoremap <silent> <C-q> ' .. &termwinkey .. ':call <SID>ToggleTerminal()<CR>'
+    exec 'tnoremap <silent> <C-S-q> ' .. &termwinkey .. ':call <SID>ToggleTerminal(1)<CR>'
     exec 'tnoremap <silent> <C-Tab> ' .. &termwinkey .. ':call <SID>RotateTerm()<CR>'
     exec 'tnoremap <silent> <C-S-Tab> ' .. &termwinkey .. ':call <SID>RotateTerm(1)<CR>'
     exec 'tnoremap <silent> <C-n> ' .. &termwinkey .. 'N<CR>'
     exec 'tnoremap <silent> <S-Insert> ' .. &termwinkey .. '"*'
-    exec 'tnoremap <silent> <C-q> ' .. &termwinkey .. ':NERDTreeToggle<CR>'
 endif
