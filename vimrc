@@ -23,8 +23,8 @@ endif
 set shellslash
 set grepprg=grep\ -nH\ $*
 if has("win32")
-    set shell=C:/Progra~1/Git/bin/bash.exe
-    set shellcmdflag=-c
+    set shell=C:/PROGRA~1/Git/usr/bin/bash.exe
+    set shellcmdflag=--login\ -c
     set shellpipe=2>&1\ \|\ tee
     set shellredir=>%s\ 2>&1
     let s:vimdir = $HOME . "/vimfiles"
@@ -126,12 +126,12 @@ inoremap <silent> <Up> <Esc>gka
 inoremap <silent> <Down> <Esc>gja
 nnoremap <silent> <C-q> :NERDTreeToggle<CR>
 inoremap <silent> <C-q> <Esc>:NERDTreeToggle<CR>
-nnoremap <silent> <S-Tab> :bprev<CR>
-nnoremap <silent> <Tab> :bnext<CR>
-nnoremap <silent> <C-PageUp> :bprev<CR>
-nnoremap <silent> <C-PageDown> :bnext<CR>
-inoremap <silent> <C-PageUp> <Esc>:bprev<CR>
-inoremap <silent> <C-PageDown> <Esc>:bnext<CR>
+nnoremap <silent> <S-Tab> :call BprevSkipTerm()<CR>
+nnoremap <silent> <Tab> :call BnextSkipTerm()<CR>
+nnoremap <silent> <C-PageUp> :call BprevSkipTerm()<CR>
+nnoremap <silent> <C-PageDown> :call BnextSkipTerm()<CR>
+inoremap <silent> <C-PageUp> <Esc>:call BprevSkipTerm()<CR>
+inoremap <silent> <C-PageDown> <Esc>:call BnextSkipTerm()<CR>
 nnoremap <silent> <Home> i <Esc>r
 nnoremap <silent> <End> a <Esc>r
 nnoremap <silent> zj o<Esc>
@@ -139,6 +139,22 @@ nnoremap <silent> zk O<Esc>
 cnoremap <C-a> <Home>
 nnoremap <Space> za
 nnoremap <C-Space> zA
+
+function! BprevSkipTerm()
+    let start_buf = bufnr('%')
+    bprev
+    while &buftype ==# "terminal" && bufnr('%') != start_buf
+        bprev
+    endwhile
+endfunction
+
+function! BnextSkipTerm()
+    let start_buf = bufnr('%')
+    bnext
+    while &buftype ==# "terminal" && bufnr('%') != start_buf
+        bnext
+    endwhile
+endfunction
 
 function! FoldOnBraces()
     if ! foldlevel(line('.'))
@@ -198,7 +214,7 @@ if ! has('nvim')
     function ToggleTerminal() abort
         const terms = term_list()
         if empty(terms)
-            botright terminal
+            exec "botright terminal ++close" &shell "--login -i"
         else
             const term = terms[0]
             if bufwinnr(term) < 0
