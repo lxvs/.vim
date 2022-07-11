@@ -204,9 +204,9 @@ autocmd BufRead,BufWrite * if ! &bin | silent! %s/\s\+$//ge | endif
 
 function s:InsertHeaderGates()
     const gatename = substitute(toupper(expand('%:t')), '[\.\-]', '_', 'g')
-    execute 'normal! ggO#ifndef __' .. gatename .. '__'
-    execute 'normal! o#define __' .. gatename .. '__'
-    execute 'normal! Go#endif /* __' .. gatename .. '__ */'
+    exec 'normal! ggO#ifndef __' .. gatename .. '__'
+    exec 'normal! o#define __' .. gatename .. '__'
+    exec 'normal! Go#endif /* __' .. gatename .. '__ */'
     normal! 2O
     normal! k
 endfunction
@@ -251,7 +251,7 @@ function s:ToggleTerminal(new = 0) abort
     endif
     const term = terms[-1]
     if bufwinnr(term) < 0
-        execute 'botright sbuffer' term
+        exec 'botright sbuffer' term
         return
     endif
     if winnr('$') == 1
@@ -265,7 +265,7 @@ function s:ToggleTerminal(new = 0) abort
         for win_id in win_findbuf(term)
             let win_nr = win_id2win(win_id)
             if win_nr > 0
-                execute win_nr 'close'
+                exec win_nr 'close'
             endif
         endfor
         if a:new
