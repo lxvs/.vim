@@ -225,6 +225,7 @@ function s:ToggleTerminal(new = 0) abort
     if empty(terms)
         exec newterm
         exec nameterm bufnr('%')
+        file
         return
     endif
     if &buftype ==# 'terminal'
@@ -242,16 +243,19 @@ function s:ToggleTerminal(new = 0) abort
                 exec nameterm bufnr('%')
             endif
         endif
+        file
         return
     endif
     if a:new
         exec newterm
         exec nameterm bufnr('%')
+        file
         return
     endif
     const term = terms[-1]
     if bufwinnr(term) < 0
         exec 'botright sbuffer' term
+        file
         return
     endif
     if winnr('$') == 1
@@ -273,6 +277,7 @@ function s:ToggleTerminal(new = 0) abort
             exec nameterm bufnr('%')
         endif
     endif
+    file
 endfunction
 
 nnoremap <silent> <C-S-q> :call <SID>ToggleTerminal(1)<CR>
