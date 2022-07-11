@@ -32,6 +32,7 @@ set encoding=utf-8
 set nofixeol
 set autochdir
 set hidden
+set autoread
 
 set number
 set ruler
@@ -50,8 +51,11 @@ set softtabstop=0
 set backspace=indent,eol,start
 set undolevels=1000
 set wildmenu
-set wildmode=full
+set wildmode=list:longest,longest:full
 
+set title
+set cursorline
+set noshowmatch
 set belloff=all
 set listchars=tab:»\ ,trail:·
 set list
