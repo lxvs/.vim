@@ -73,6 +73,8 @@ catch
     endtry
 endtry
 
+let g:diff_translations = 0
+
 set nrformats-=octal
 map Q gq
 sunmap Q
