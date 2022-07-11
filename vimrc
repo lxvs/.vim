@@ -14,14 +14,16 @@ endif
 
 set shellslash
 set grepprg=grep\ -nH\ $*
-if has('win32')
+let s:vimdir = $HOME .. '/.vim'
+if has('win32') || has('win64')
+    set runtimepath-=$HOME/vimfiles
+    set runtimepath-=$HOME/vimfiles/after
+    set runtimepath^=$HOME/.vim
+    set runtimepath+=$HOME/.vim/after
     set shell=C:/PROGRA~1/Git/usr/bin/bash.exe
     set shellcmdflag=--login\ -c
     set shellpipe=2>&1\ \|\ tee
     set shellredir=>%s\ 2>&1
-    let s:vimdir = $HOME .. '/vimfiles'
-else
-    let s:vimdir = $HOME .. '/.vim'
 endif
 
 set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
@@ -99,7 +101,7 @@ endif
 if ! isdirectory(s:vimdir .. '/temp')
     call mkdir(s:vimdir .. '/temp', '', 0700)
 endif
-let &directory = s:vimdir .. '/temp/'
+let &directory = s:vimdir .. '/temp'
 if has('vms')
     set nobackup
 else
@@ -113,7 +115,7 @@ else
             call mkdir(s:vimdir .. '/undo', '', 0700)
         endif
         set undofile
-        let &undodir = s:vimdir .. '/undo/'
+        let &undodir = s:vimdir .. '/undo'
     endif
 endif
 
