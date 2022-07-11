@@ -144,13 +144,26 @@ nnoremap <Space> za
 nnoremap <C-Space> zA
 
 function s:BnextSkipTerm(reverse = 0)
-    const start_buf = bufnr('%')
-    const cmd = a:reverse ? 'bprev' : 'bnext'
+    const otherbuflist = filter(range(1, bufnr('$')), 'buflisted(v:val) && getbufvar(v:val, "&buftype") !=# "terminal"')
+    const otherbuflen = len(otherbuflist)
+    if otherbuflen == 0 || otherbuflen < 2 && &buftype !=# 'terminal'
+        return
+    endif
+    const curbuf = bufnr('%')
+    const curidx = index(otherbuflist, curbuf)
+    if curidx == -1
+        const buflist = filter(range(1, bufnr('$')), 'buflisted(v:val)')
+        const cmdbpn = a:reverse ? 'bprev' : 'bnext'
+        exec cmdbpn
+        while &buftype ==# 'terminal' && bufnr('%') != curbuf
+            exec cmdbpn
+        endwhile
+        return
+    endif
+    const cmd = 'b ' .. otherbuflist[(a:reverse ? curidx - 1 : curidx + 1) % otherbuflen]
     exec cmd
-    while &buftype ==# 'terminal' && bufnr('%') != start_buf
-        exec cmd
-    endwhile
 endfunction
+
 nnoremap <silent> <S-Tab> :call <SID>BnextSkipTerm(1)<CR>
 nnoremap <silent> <Tab> :call <SID>BnextSkipTerm()<CR>
 nnoremap <silent> <C-l> <C-i>
