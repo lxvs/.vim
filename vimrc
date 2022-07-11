@@ -121,8 +121,6 @@ if has('syntax') && has('eval')
     packadd! matchit
 endif
 
-inoremap kj <Esc>
-cnoremap kj <C-u><BS>
 nnoremap <C-s> :w<CR>
 inoremap <C-s> <Esc>:w<CR>a
 vnoremap <C-c> "*y
@@ -148,6 +146,7 @@ function s:BnextSkipTerm(reverse = 0)
 endfunction
 nnoremap <silent> <S-Tab> :call <SID>BnextSkipTerm(1)<CR>
 nnoremap <silent> <Tab> :call <SID>BnextSkipTerm()<CR>
+nnoremap <silent> <C-l> <C-i>
 nnoremap <silent> <C-PageUp> :call <SID>BnextSkipTerm(1)<CR>
 nnoremap <silent> <C-PageDown> :call <SID>BnextSkipTerm()<CR>
 inoremap <silent> <C-PageUp> <Esc>:call <SID>BnextSkipTerm(1)<CR>
@@ -260,6 +259,9 @@ nnoremap <silent> <C-^> :call <SID>ToggleTerminal(1)<CR>
 inoremap <silent> <C-^> <Esc>:call <SID>ToggleTerminal(1)<CR>
 nnoremap <silent> <C-q> :call <SID>ToggleTerminal()<CR>
 inoremap <silent> <C-q> <Esc>:call <SID>ToggleTerminal()<CR>
+vnoremap <silent> <C-S-q> <Nop>
+vnoremap <silent> <C-^> <Nop>
+vnoremap <silent> <C-q> <Nop>
 tnoremap <silent> <C-s> <Nop>
 
 function s:RotateTerm(reverse = 0) abort
