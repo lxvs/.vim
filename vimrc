@@ -26,6 +26,7 @@ if has('win32') || has('win64')
     set shellredir=>%s\ 2>&1
 endif
 
+filetype plugin indent on
 set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
 set termencoding=utf-8
 set encoding=utf-8
@@ -77,13 +78,13 @@ map Q gq
 sunmap Q
 inoremap <C-U> <C-G>u<C-U>
 
-if 1
-    filetype plugin indent on
+augroup vimStartup
+    autocmd!
     autocmd BufReadPost *
                 \ if line("'\"") >= 1 && line("'\"") <= line('$') && &ft !~# 'commit'
                 \ |   exe 'normal! g`"'
                 \ | endif
-endif
+augroup END
 
 if &t_Co > 2 || has('gui_running')
     syntax on
