@@ -229,7 +229,7 @@ endfunction
 
 augroup RemoveTrailingSpaces
     autocmd!
-    autocmd BufRead,BufWrite * call s:RemoveTrailingSpaces()
+    autocmd BufWrite * call s:RemoveTrailingSpaces()
 augroup END
 
 function s:InsertHeaderGates()
