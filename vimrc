@@ -174,7 +174,7 @@ inoremap <silent> <C-PageDown> <Esc>:call <SID>BnextSkipTerm()<CR>
 
 function s:FoldOnBraces()
     if ! foldlevel(line('.'))
-        exec 'normal! zfa{'
+        exec 'normal! zfi{'
     else
         exec 'normal! za'
     endif
@@ -184,21 +184,22 @@ endfunction
 function s:FoldForMarkdown()
     if foldlevel(line('.'))
         exec 'normal! za'
-    else
-        if search('^#\{1,\} \w', 'bcnW')
-            if search('^#\{1,\} \w', 'nW')
-                let lcur = line('.')
-                let lstart = search('^#\{1,\} [^ \t]', 'bcnW')
-                let lend = search('^#\{1,\} [^ \t]', 'nW') - 2
-                if lcur <= lend && lstart < lend
-                    exec lstart .. ',' .. lend .. 'fold'
-                endif
-            else
-                exec '?^#\{1,\} \w?,$ fold'
-            endif
-        endif
-        redraw
+        return
     endif
+    if ! search('^#\{1,\} \w', 'bcnW')
+        return
+    endif
+    if search('^#\{1,\} \w', 'nW')
+        let lcur = line('.')
+        let lstart = search('^#\{1,\} [^ \t]', 'bcnW')
+        let lend = search('^#\{1,\} [^ \t]', 'nW') - 2
+        if lcur <= lend && lstart < lend
+            exec lstart .. ',' .. lend .. 'fold'
+        endif
+    else
+        exec '?^#\{1,\} \w?,$ fold'
+    endif
+    redraw
 endfunction
 
 augroup AutoFold
