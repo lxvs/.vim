@@ -212,8 +212,22 @@ augroup AutoFold
                 \ nnoremap <silent><buffer> <Space> :call <SID>FoldForMarkdown()<CR>
 augroup END
 
-" Remove any trailing whitespace that is in the file
-autocmd BufRead,BufWrite * if ! &bin | silent! %s/\s\+$//ge | endif
+function s:RemoveTrailingSpaces()
+    if &bin
+        return
+    endif
+    silent! %s/\s\+$//ge
+    const lasthist = histget('/', -1)
+    const lastcmd = split(lasthist, '\s\+')[0]
+    if lastcmd ==# '\s\+$'
+        call histdel('/', -1)
+    endif
+endfunction
+
+augroup RemoveTrailingSpaces
+    autocmd!
+    autocmd BufRead,BufWrite * call s:RemoveTrailingSpaces()
+augroup END
 
 function s:InsertHeaderGates()
     const gatename = substitute(toupper(expand('%:t')), '[\.\-]', '_', 'g')
