@@ -220,24 +220,33 @@ function s:ToggleTerminal(new = 0) abort
     const newterm = 'botright terminal ++close ' .. &shell .. ' --login -i'
     const newterm_curwin = 'botright terminal ++curwin ++close ' .. &shell .. ' --login -i'
     const otherbuf = len(filter(range(1, bufnr('$')), 'buflisted(v:val) && getbufvar(v:val, "&buftype") !=# "terminal"'))
-    const onlywin = a:new ? newterm_curwin : (otherbuf ? 'call <SID>BnextSkipTerm(1)' : 'enew')
+    const onlywin = otherbuf ? 'call <SID>BnextSkipTerm(1)' : 'enew'
+    let nameterm = 'silent! keepalt file Terminal'
     if empty(terms)
         exec newterm
+        exec nameterm bufnr('%')
         return
     endif
     if &buftype ==# 'terminal'
         if winnr('$') == 1
-            exec onlywin
+            if a:new
+                exec newterm_curwin
+                exec nameterm bufnr('%')
+            else
+                exec onlywin
+            endif
         else
             close
             if a:new
                 exec newterm
+                exec nameterm bufnr('%')
             endif
         endif
         return
     endif
     if a:new
         exec newterm
+        exec nameterm bufnr('%')
         return
     endif
     const term = terms[-1]
@@ -246,7 +255,12 @@ function s:ToggleTerminal(new = 0) abort
         return
     endif
     if winnr('$') == 1
-        exec onlywin
+        if a:new
+            exec newterm_curwin
+            exec nameterm bufnr('%')
+        else
+            exec onlywin
+        endif
     else
         for win_id in win_findbuf(term)
             let win_nr = win_id2win(win_id)
@@ -256,6 +270,7 @@ function s:ToggleTerminal(new = 0) abort
         endfor
         if a:new
             exec newterm
+            exec nameterm bufnr('%')
         endif
     endif
 endfunction
