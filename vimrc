@@ -266,7 +266,7 @@ function s:ToggleTerminal(new = 0) abort
                     exec onlywin
                 endif
             else
-                close
+                close!
                 if a:new
                     exec newterm
                     exec nameterm bufnr('%')
@@ -287,7 +287,7 @@ function s:ToggleTerminal(new = 0) abort
                         for win_id in win_findbuf(term)
                             let win_nr = win_id2win(win_id)
                             if win_nr > 0
-                                exec win_nr 'close'
+                                exec win_nr 'close!'
                             endif
                         endfor
                     endif
