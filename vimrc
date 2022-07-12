@@ -161,10 +161,10 @@ function s:BnextSkipTerm(reverse = 0)
         while &buftype ==# 'terminal' && bufnr('%') != curbuf
             exec cmdbpn
         endwhile
-        return
+    else
+        const cmd = 'b ' .. otherbuflist[(a:reverse ? curidx - 1 : curidx + 1) % otherbuflen]
+        exec cmd
     endif
-    const cmd = 'b ' .. otherbuflist[(a:reverse ? curidx - 1 : curidx + 1) % otherbuflen]
-    exec cmd
 endfunction
 
 nnoremap <silent> <S-Tab> :call <SID>BnextSkipTerm(1)<CR>
@@ -187,22 +187,22 @@ endfunction
 function s:FoldForMarkdown()
     if foldlevel(line('.'))
         exec 'normal! za'
-        return
-    endif
-    if ! search('^#\{1,\} \w', 'bcnW')
-        return
-    endif
-    if search('^#\{1,\} \w', 'nW')
-        let lcur = line('.')
-        let lstart = search('^#\{1,\} [^ \t]', 'bcnW')
-        let lend = search('^#\{1,\} [^ \t]', 'nW') - 2
-        if lcur <= lend && lstart < lend
-            exec lstart .. ',' .. lend .. 'fold'
-        endif
     else
-        exec '?^#\{1,\} \w?,$ fold'
+        if ! search('^#\{1,\} \w', 'bcnW')
+            return
+        endif
+        if search('^#\{1,\} \w', 'nW')
+            let lcur = line('.')
+            let lstart = search('^#\{1,\} [^ \t]', 'bcnW')
+            let lend = search('^#\{1,\} [^ \t]', 'nW') - 2
+            if lcur <= lend && lstart < lend
+                exec lstart .. ',' .. lend .. 'fold'
+            endif
+        else
+            exec '?^#\{1,\} \w?,$ fold'
+        endif
+        redraw
     endif
-    redraw
 endfunction
 
 augroup AutoFold
@@ -256,56 +256,43 @@ function s:ToggleTerminal(new = 0) abort
     if empty(terms)
         exec newterm
         exec nameterm bufnr('%')
-        file
-        return
-    endif
-    if &buftype ==# 'terminal'
-        if winnr('$') == 1
-            if a:new
-                exec newterm_curwin
-                exec nameterm bufnr('%')
+    else
+        if &buftype ==# 'terminal'
+            if winnr('$') == 1
+                if a:new
+                    exec newterm_curwin
+                    exec nameterm bufnr('%')
+                else
+                    exec onlywin
+                endif
             else
-                exec onlywin
+                close
+                if a:new
+                    exec newterm
+                    exec nameterm bufnr('%')
+                endif
             endif
         else
-            close
             if a:new
                 exec newterm
                 exec nameterm bufnr('%')
+            else
+                const term = terms[-1]
+                if bufwinnr(term) < 0
+                    exec 'botright sbuffer' term
+                else
+                    if winnr('$') == 1
+                        exec onlywin
+                    else
+                        for win_id in win_findbuf(term)
+                            let win_nr = win_id2win(win_id)
+                            if win_nr > 0
+                                exec win_nr 'close'
+                            endif
+                        endfor
+                    endif
+                endif
             endif
-        endif
-        file
-        return
-    endif
-    if a:new
-        exec newterm
-        exec nameterm bufnr('%')
-        file
-        return
-    endif
-    const term = terms[-1]
-    if bufwinnr(term) < 0
-        exec 'botright sbuffer' term
-        file
-        return
-    endif
-    if winnr('$') == 1
-        if a:new
-            exec newterm_curwin
-            exec nameterm bufnr('%')
-        else
-            exec onlywin
-        endif
-    else
-        for win_id in win_findbuf(term)
-            let win_nr = win_id2win(win_id)
-            if win_nr > 0
-                exec win_nr 'close'
-            endif
-        endfor
-        if a:new
-            exec newterm
-            exec nameterm bufnr('%')
         endif
     endif
     file
@@ -325,11 +312,10 @@ tnoremap <silent> <C-s> <Nop>
 function s:RotateTerm(reverse = 0) abort
     const terms = term_list()
     let len = len(terms)
-    if len < 2
-        return
+    if len > 1
+        let idx = a:reverse ? (index(terms, bufnr('%')) +  1) % len : (index(terms, bufnr('%')) -  1) % len
+        exec 'buffer' terms[idx]
     endif
-    let idx = a:reverse ? (index(terms, bufnr('%')) +  1) % len : (index(terms, bufnr('%')) -  1) % len
-    exec 'buffer' terms[idx]
 endfunction
 
 if ! has('nvim')
