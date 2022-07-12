@@ -34,6 +34,7 @@ set nofixeol
 set autochdir
 set hidden
 set autoread
+set nostartofline
 
 set number
 set ruler
