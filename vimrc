@@ -296,6 +296,7 @@ function s:ToggleTerminal(new = 0) abort
         endif
     endif
     file
+    checktime
 endfunction
 
 nnoremap <silent> <C-S-q> :call <SID>ToggleTerminal(1)<CR>
