@@ -62,6 +62,8 @@ set belloff=all
 set listchars=tab:»\ ,trail:·
 set list
 set foldmethod=manual
+set nowrap
+set sidescroll=1
 set laststatus=2
 set noshowmode
 let g:lightline = {'colorscheme': 'nord'}
