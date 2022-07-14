@@ -93,6 +93,7 @@ augroup END
 if &t_Co > 2 || has('gui_running')
     syntax on
     set hlsearch
+    unlet! c_comment_strings
 endif
 
 if !exists(':DiffOrig')
