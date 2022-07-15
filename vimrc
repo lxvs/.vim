@@ -126,9 +126,11 @@ if has('syntax') && has('eval')
     packadd! matchit
 endif
 
-nnoremap <C-s> :w<CR>
-inoremap <C-s> <Esc>:w<CR>a
-vnoremap <C-c> "*y
+nnoremap <C-s> <Cmd>w<CR>
+inoremap <C-s> <Cmd>w<CR>
+xnoremap <C-s> <Cmd>w<CR>
+tnoremap <C-s> <Nop>
+xnoremap <C-c> "*y
 nnoremap <silent> k gk
 nnoremap <silent> j gj
 inoremap <silent> <Up> <Esc>gka
@@ -140,6 +142,8 @@ nnoremap <silent> zk O<Esc>
 cnoremap <C-a> <Home>
 nnoremap <Space> za
 nnoremap <C-Space> zA
+tnoremap <silent> <C-n> <C-\><C-N>
+tnoremap <silent> <S-Insert> "*'
 
 function s:BnextSkipTerm(reverse = 0)
     const otherbuflist = filter(range(1, bufnr('$')), 'buflisted(v:val) && getbufvar(v:val, "&buftype") !=# "terminal"')
@@ -162,13 +166,17 @@ function s:BnextSkipTerm(reverse = 0)
     endif
 endfunction
 
-nnoremap <silent> <S-Tab> :call <SID>BnextSkipTerm(1)<CR>
-nnoremap <silent> <Tab> :call <SID>BnextSkipTerm()<CR>
+nnoremap <silent> <S-Tab> <Cmd>call <SID>BnextSkipTerm(1)<CR>
+xnoremap <silent> <S-Tab> <Cmd>call <SID>BnextSkipTerm(1)<CR>
+nnoremap <silent> <Tab> <Cmd>call <SID>BnextSkipTerm()<CR>
+xnoremap <silent> <Tab> <Cmd>call <SID>BnextSkipTerm()<CR>
 nnoremap <silent> <C-l> <C-i>
-nnoremap <silent> <C-PageUp> :call <SID>BnextSkipTerm(1)<CR>
-nnoremap <silent> <C-PageDown> :call <SID>BnextSkipTerm()<CR>
-inoremap <silent> <C-PageUp> <Esc>:call <SID>BnextSkipTerm(1)<CR>
-inoremap <silent> <C-PageDown> <Esc>:call <SID>BnextSkipTerm()<CR>
+nnoremap <silent> <C-PageUp> <Cmd>call <SID>BnextSkipTerm(1)<CR>
+inoremap <silent> <C-PageUp> <Cmd>call <SID>BnextSkipTerm(1)<CR>
+xnoremap <silent> <C-PageUp> <Cmd>call <SID>BnextSkipTerm(1)<CR>
+nnoremap <silent> <C-PageDown> <Cmd>call <SID>BnextSkipTerm()<CR>
+inoremap <silent> <C-PageDown> <Cmd>call <SID>BnextSkipTerm()<CR>
+xnoremap <silent> <C-PageDown> <Cmd>call <SID>BnextSkipTerm()<CR>
 
 function s:FoldOnBraces()
     if ! foldlevel(line('.'))
@@ -206,9 +214,9 @@ augroup AutoFold
     autocmd FileType c,cpp,h,hpp,sh,markdown
                 \ silent! nunmap <buffer> <Space>
     autocmd FileType c,cpp,h,hpp,sh
-                \ nnoremap <silent><buffer> <Space> :call <SID>FoldOnBraces()<CR>
+                \ nnoremap <silent><buffer> <Space> <Cmd>call <SID>FoldOnBraces()<CR>
     autocmd FileType markdown
-                \ nnoremap <silent><buffer> <Space> :call <SID>FoldForMarkdown()<CR>
+                \ nnoremap <silent><buffer> <Space> <Cmd>call <SID>FoldForMarkdown()<CR>
 augroup END
 
 function s:RemoveTrailingSpaces()
@@ -244,7 +252,7 @@ augroup END
 augroup FileList
     autocmd!
     autocmd BufNewFile,BufRead */.vim/filelist
-                \ nnoremap <buffer><silent> <C-\><C-O> :e <C-R>=getline('.')<CR><CR>
+                \ nnoremap <buffer><silent> <C-\><C-O> <Cmd>e <C-R>=getline('.')<CR><CR>
     autocmd BUfNewFile,BufRead */.vim/filelist
                 \ command! -buffer UpdateFileList exec '!find .. -type f -not -regex ' .. shellescape('^\.\./\..*') .. ' >%'
 augroup END
@@ -302,16 +310,18 @@ function s:ToggleTerminal(new = 0) abort
     checktime
 endfunction
 
-nnoremap <silent> <C-S-q> :call <SID>ToggleTerminal(1)<CR>
-inoremap <silent> <C-S-q> <Esc>:call <SID>ToggleTerminal(1)<CR>
-nnoremap <silent> <C-^> :call <SID>ToggleTerminal(1)<CR>
-inoremap <silent> <C-^> <Esc>:call <SID>ToggleTerminal(1)<CR>
-nnoremap <silent> <C-q> :call <SID>ToggleTerminal()<CR>
-inoremap <silent> <C-q> <Esc>:call <SID>ToggleTerminal()<CR>
-vnoremap <silent> <C-S-q> <Nop>
-vnoremap <silent> <C-^> <Nop>
-vnoremap <silent> <C-q> <Nop>
-tnoremap <silent> <C-s> <Nop>
+nnoremap <silent> <C-S-q> <Cmd>call <SID>ToggleTerminal(1)<CR>
+inoremap <silent> <C-S-q> <Cmd>call <SID>ToggleTerminal(1)<CR>
+xnoremap <silent> <C-S-q> <Cmd>call <SID>ToggleTerminal(1)<CR>
+tnoremap <silent> <C-S-q> <Cmd>call <SID>ToggleTerminal(1)<CR>
+nnoremap <silent> <C-^> <Cmd>call <SID>ToggleTerminal(1)<CR>
+inoremap <silent> <C-^> <Cmd>call <SID>ToggleTerminal(1)<CR>
+xnoremap <silent> <C-^> <Cmd>call <SID>ToggleTerminal(1)<CR>
+tnoremap <silent> <C-^> <Cmd>call <SID>ToggleTerminal(1)<CR>
+nnoremap <silent> <C-q> <Cmd>call <SID>ToggleTerminal()<CR>
+inoremap <silent> <C-q> <Cmd>call <SID>ToggleTerminal()<CR>
+xnoremap <silent> <C-q> <Cmd>call <SID>ToggleTerminal()<CR>
+tnoremap <silent> <C-q> <Cmd>call <SID>ToggleTerminal()<CR>
 
 function s:RotateTerm(reverse = 0) abort
     const terms = term_list()
@@ -322,16 +332,12 @@ function s:RotateTerm(reverse = 0) abort
     endif
 endfunction
 
-if ! has('nvim')
-    set termwinkey=<C-l>
-    exec 'tnoremap <silent> <C-S-q> ' .. &termwinkey .. ':call <SID>ToggleTerminal(1)<CR>'
-    exec 'tnoremap <silent> <C-^> ' .. &termwinkey .. ':call <SID>ToggleTerminal(1)<CR>'
-    exec 'tnoremap <silent> <C-q> ' .. &termwinkey .. ':call <SID>ToggleTerminal()<CR>'
-    exec 'tnoremap <silent> <C-S-Tab> ' .. &termwinkey .. ':call <SID>RotateTerm(1)<CR>'
-    exec 'tnoremap <silent> <C-Tab> ' .. &termwinkey .. ':call <SID>RotateTerm()<CR>'
-    exec 'tnoremap <silent> <C-n> ' .. &termwinkey .. 'N<CR>'
-    exec 'tnoremap <silent> <S-Insert> ' .. &termwinkey .. '"*'
-endif
+tnoremap <silent> <C-S-Tab> <Cmd>call <SID>RotateTerm(1)<CR>
+tnoremap <silent> <C-Tab> <Cmd>call <SID>RotateTerm()<CR>
+tnoremap <silent> <C-PageUp> <Cmd>call <SID>RotateTerm(1)<CR>
+tnoremap <silent> <C-PageDown> <Cmd>call <SID>RotateTerm(1)<CR>
+
+set termwinkey=<C-l>
 
 function s:Grep(...)
     return system(join([&grepprg] + [expandcmd(join(a:000, ' '))], ' '))
