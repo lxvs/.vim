@@ -13,7 +13,7 @@ if has('gui_running')
 endif
 
 set shellslash
-set grepprg=grep\ -nH\ $*
+set grepprg=grep\ -Hnr
 let s:vimdir = $HOME .. '/.vim'
 if has('win32') || has('win64')
     set runtimepath-=$HOME/vimfiles
@@ -332,3 +332,19 @@ if ! has('nvim')
     exec 'tnoremap <silent> <C-n> ' .. &termwinkey .. 'N<CR>'
     exec 'tnoremap <silent> <S-Insert> ' .. &termwinkey .. '"*'
 endif
+
+function s:Grep(...)
+    return system(join([&grepprg] + [expandcmd(join(a:000, ' '))], ' '))
+endfunction
+
+command! -nargs=+ -complete=file_in_path -bar Grep cgetexpr <SID>Grep(<f-args>)
+command! -nargs=+ -complete=file_in_path -bar LGrep lgetexpr <SID>Grep(<f-args>)
+
+cnoreabbrev <expr> grep (getcmdtype() ==# ':' && getcmdline() ==# 'grep') ? 'Grep' : 'grep'
+cnoreabbrev <expr> lgrep (getcmdtype() ==# ':' && getcmdline() ==# 'lgrep') ? 'LGrep' : 'lgrep'
+
+augroup quickfix
+    autocmd!
+    autocmd QuickFixCmdPost cgetexpr cwindow
+    autocmd QuickFixCmdPost lgetexpr lwindow
+augroup END
