@@ -241,6 +241,14 @@ augroup HeaderGates
     autocmd BufNewFile *.{h,hpp} call <SID>InsertHeaderGates()
 augroup END
 
+augroup FileList
+    autocmd!
+    autocmd BufNewFile,BufRead */.vim/filelist
+                \ nnoremap <buffer><silent> <C-\><C-O> :e <C-R>=getline('.')<CR><CR>
+    autocmd BUfNewFile,BufRead */.vim/filelist
+                \ command! -buffer UpdateFileList exec '!find .. -type f -not -regex ' .. shellescape('^\.\./\..*') .. ' >%'
+augroup END
+
 function s:ToggleTerminal(new = 0) abort
     const terms = term_list()
     const newterm = 'botright terminal ++close ' .. &shell .. ' --login -i'
