@@ -83,14 +83,6 @@ map Q gq
 sunmap Q
 inoremap <C-U> <C-G>u<C-U>
 
-augroup vimStartup
-    autocmd!
-    autocmd BufReadPost *
-                \ if line("'\"") >= 1 && line("'\"") <= line('$') && &ft !~# 'commit'
-                \ |   exe 'normal! g`"'
-                \ | endif
-augroup END
-
 if &t_Co > 2 || has('gui_running')
     syntax on
     set hlsearch
