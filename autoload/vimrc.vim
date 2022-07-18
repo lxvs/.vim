@@ -50,7 +50,7 @@ function vimrc#FoldForMarkdown()
 endfunction
 
 function vimrc#RemoveTrailingSpaces()
-    if &bin
+    if &bin || &filetype ==# 'diff'
         return
     endif
     silent! %s/\s\+$//ge
