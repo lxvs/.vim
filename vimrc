@@ -182,7 +182,7 @@ augroup END
 augroup FileList
     autocmd!
     autocmd BufNewFile,BufRead */.vim/filelist
-                \ nnoremap <buffer><silent> <C-\><C-O> <Cmd>e <C-R>=getline('.')<CR><CR>
+                \ nnoremap <buffer><silent> <Leader>o <Cmd>exec 'e ' ..  getline('.')<CR>
     autocmd BUfNewFile,BufRead */.vim/filelist
                 \ command! -buffer UpdateFileList exec '!find .. -type f -not -regex ' .. shellescape('^\.\./\..*') .. ' >%'
 augroup END
