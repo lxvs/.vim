@@ -12,6 +12,14 @@ if has('gui_running')
     set lines=43
 endif
 
+if has('mouse')
+  if &term =~ 'xterm'
+    set mouse=a
+  else
+    set mouse=nvi
+  endif
+endif
+
 set shellslash
 set grepprg=grep\ -Hnr
 let s:vimdir = $HOME .. '/.vim'
