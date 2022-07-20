@@ -225,3 +225,14 @@ augroup quickfix
     autocmd QuickFixCmdPost cgetexpr cwindow
     autocmd QuickFixCmdPost lgetexpr lwindow
 augroup END
+
+augroup VimStartup
+    autocmd!
+    autocmd BufReadPost *
+                \ if line("'\"") > 0 && line("'\"") <= line("$")
+                \           && &filetype !~# 'commit\|gitrebase'
+                \           && expand("%") !~ "ADD_EDIT.patch"
+                \           && expand("%") !~ "addp-hunk-edit.diff" |
+                \   exe "normal! g`\"" |
+                \ endif
+augroup END
