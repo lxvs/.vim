@@ -34,6 +34,7 @@ if has('win32') || has('win64')
     set shellredir=>%s\ 2>&1
 endif
 
+let g:is_posix=1
 filetype plugin indent on
 set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
 set termencoding=utf-8
