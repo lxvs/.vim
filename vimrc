@@ -170,9 +170,9 @@ xnoremap <silent> <C-PageDown> <Cmd>call vimrc#BnextSkipTerm()<CR>
 augroup AutoFold
     autocmd!
     autocmd FileType vim setlocal foldmethod=indent
-    autocmd FileType c,cpp,h,hpp,sh,markdown
+    autocmd FileType c,cpp,h,hpp,sh,json,markdown
                 \ silent! nunmap <buffer> <Space>
-    autocmd FileType c,cpp,h,hpp,sh
+    autocmd FileType c,cpp,h,hpp,sh,json
                 \ nnoremap <silent><buffer> <Space> <Cmd>call vimrc#FoldOnBraces()<CR>
     autocmd FileType markdown
                 \ nnoremap <silent><buffer> <Space> <Cmd>call vimrc#FoldForMarkdown()<CR>
