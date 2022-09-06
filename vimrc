@@ -196,6 +196,12 @@ augroup FileList
                 \ command! -buffer UpdateFileList exec '!find .. -type f -not -regex ' .. shellescape('^\.\./\..*') .. ' >%'
 augroup END
 
+augroup SetIndent
+    autocmd!
+    autocmd FileType html setlocal shiftwidth=2
+    autocmd FileType html setlocal tabstop=2
+augroup END
+
 nnoremap <silent> <C-S-q> <Cmd>call vimrc#ToggleTerminal(1)<CR>
 inoremap <silent> <C-S-q> <Cmd>call vimrc#ToggleTerminal(1)<CR>
 xnoremap <silent> <C-S-q> <Cmd>call vimrc#ToggleTerminal(1)<CR>
