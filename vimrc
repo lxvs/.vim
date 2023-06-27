@@ -7,9 +7,9 @@ endif
 if has('gui_running')
     set guioptions-=m
     set guioptions-=T
-    set guifont=Consolas:h11,Courier_New:h11
+    set guifont=Cascadia_Code:h11,Courier_New:h11
     set columns=132
-    set lines=43
+    set lines=32
 endif
 
 if has('mouse')
@@ -65,6 +65,7 @@ set backspace=indent,eol,start
 set undolevels=1000
 set wildmenu
 set wildmode=list:longest,longest:full
+set showcmd
 
 set title
 set cursorline
