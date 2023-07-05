@@ -40,7 +40,7 @@ set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
 set termencoding=utf-8
 set encoding=utf-8
 set clipboard=
-set nofixeol
+set fixeol
 set autochdir
 set hidden
 set autoread
@@ -74,7 +74,7 @@ set belloff=all
 set listchars=tab:»\ ,trail:·
 set list
 set foldmethod=manual
-set nowrap
+set wrap
 set sidescroll=1
 set laststatus=2
 set noshowmode
