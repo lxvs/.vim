@@ -146,8 +146,6 @@ nnoremap <silent> k gk
 nnoremap <silent> j gj
 inoremap <silent> <Up> <Esc>gka
 inoremap <silent> <Down> <Esc>gja
-nnoremap <silent> <Home> i <Esc>r
-nnoremap <silent> <End> a <Esc>r
 nnoremap <silent> zj o<Esc>
 nnoremap <silent> zk O<Esc>
 cnoremap <C-a> <Home>
