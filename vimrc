@@ -79,13 +79,8 @@ set sidescroll=1
 set laststatus=2
 set noshowmode
 let g:lightline = {'colorscheme': 'nord'}
-try
-    colorscheme nord
-catch
-    try
-        colorscheme desert
-    endtry
-endtry
+set background=dark
+colorscheme nord
 
 let g:diff_translations = 0
 
