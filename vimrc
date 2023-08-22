@@ -78,9 +78,21 @@ set wrap
 set sidescroll=1
 set laststatus=2
 set noshowmode
-let g:lightline = {'colorscheme': 'nord'}
 set background=dark
 colorscheme nord
+
+let g:lightline = {
+      \ 'colorscheme': 'nord',
+      \ 'active': {
+      \     'left': [
+      \         ['mode', 'paste'],
+      \         ['readonly', 'filename', 'branch', 'modified']
+      \     ],
+      \ },
+      \ 'component_function': {
+      \     'branch': 'FugitiveHead'
+      \ },
+      \ }
 
 let g:diff_translations = 0
 
