@@ -1,9 +1,5 @@
+*.spl
 /bak/
-/ftdetect/
-/ftplugin/
-/indent/
-/spell/
-/syntax/
 /temp/
 /undo/
 /.netrwhist
