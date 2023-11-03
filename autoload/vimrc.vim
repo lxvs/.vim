@@ -50,7 +50,7 @@ function vimrc#FoldForMarkdown()
 endfunction
 
 function vimrc#RemoveTrailingSpaces()
-    if &bin || &filetype ==# 'diff'
+    if &bin || &filetype ==# 'diff' || &filetype ==# 'gitcommit'
         return
     endif
     silent! %s/\s\+$//ge
