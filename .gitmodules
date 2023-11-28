@@ -22,3 +22,4 @@
 	path = pack/thinca/start/vim-visualstar
 	url = ../../thinca/vim-visualstar.git
 	branch = master
+	ignore = untracked
