@@ -51,6 +51,7 @@ endfunction
 
 function vimrc#RemoveTrailingSpaces()
     if &bin || &filetype ==# 'diff' || &filetype ==# 'gitcommit'
+                \ || &filetype ==# 'xcradlehistory'
         return
     endif
     silent! %s/\s\+$//ge
