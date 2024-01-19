@@ -1,5 +1,6 @@
 ASCIIZ
 AsciiDoc
+BHS
 BKC
 BMC
 CRB
@@ -31,6 +32,7 @@ WIP
 XCradle
 asciidoc
 asciidoctor
+bytedance
 dialer
 gitattributes
 gitignore
