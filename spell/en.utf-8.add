@@ -39,6 +39,7 @@ gitattributes
 gitignore
 hpmsign
 ieicommit
+ipmitool
 jenkinsbuild
 localhost
 makeveb
