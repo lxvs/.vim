@@ -1,2 +1,3 @@
 setlocal spell
-let b:undo_ftplugin ..= ' spell<'
+setlocal spelloptions=camel
+let b:undo_ftplugin ..= ' spell< spelloptions<'
