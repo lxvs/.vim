@@ -78,11 +78,10 @@ set wrap
 set sidescroll=1
 set laststatus=2
 set noshowmode
-set background=dark
-colorscheme nord
+colorscheme iceberg
 
 let g:lightline = {
-      \ 'colorscheme': 'nord',
+      \ 'colorscheme': 'iceberg',
       \ 'active': {
       \     'left': [
       \         ['mode', 'paste'],
