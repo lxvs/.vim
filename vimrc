@@ -78,6 +78,7 @@ set wrap
 set sidescroll=1
 set laststatus=2
 set noshowmode
+set background=light
 colorscheme iceberg
 
 let g:lightline = {
