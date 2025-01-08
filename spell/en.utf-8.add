@@ -33,6 +33,7 @@ esc
 ewdk
 exe
 fdf
+fixup
 frb
 fru
 fsp
@@ -57,7 +58,9 @@ inspur
 ipmi
 ipmitool
 iso
+jdk
 jenkinsbuild
+jre
 lf
 linux
 localhost
